@@ -1,0 +1,763 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 导入Google字体 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap');
+
+/* 自定义基础样式 */
+@layer base {
+  body {
+    @apply bg-game-bg text-white min-h-screen antialiased;
+    font-family: 'Noto Sans SC', 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  
+  /* 自定义滚动条 */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-800 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-600 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-500;
+  }
+}
+
+/* 自定义组件样式 */
+@layer components {
+  .btn {
+    @apply px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold transition-all duration-300 cursor-pointer;
+    @apply shadow-lg hover:shadow-xl;
+    @apply text-sm sm:text-base;
+    /* 移动端优化触摸目标 */
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white;
+  }
+
+  .btn-accent {
+    @apply bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-black font-bold;
+  }
+
+  .btn-outline {
+    @apply border-2 border-primary-500 text-primary-400 hover:bg-primary-500 hover:text-white;
+    @apply bg-primary-500/10;
+  }
+
+  .card {
+    @apply bg-gradient-to-br from-game-card to-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl;
+    @apply border border-slate-700/50;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 sm:px-5 sm:py-4 bg-slate-800/80 border-2 border-slate-600/50 rounded-xl
+           text-white placeholder-slate-400
+           focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20
+           transition-all duration-300;
+    @apply backdrop-blur-sm text-base sm:text-lg;
+    /* 防止iOS缩放 */
+    font-size: 16px;
+  }
+  
+  .input-field:focus {
+    @apply bg-slate-800;
+  }
+}
+
+/* 自定义工具类 */
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-orange-500 to-red-500;
+  }
+
+  .glow {
+    box-shadow:
+      0 0 20px var(--glow-color-primary, rgba(245, 158, 11, 0.3)),
+      0 0 40px var(--glow-color-secondary, rgba(245, 158, 11, 0.1));
+  }
+
+  .glow-success {
+    box-shadow:
+      0 0 30px rgba(34, 197, 94, 0.4),
+      0 0 60px rgba(34, 197, 94, 0.2);
+  }
+
+  .glow-danger {
+    box-shadow:
+      0 0 30px rgba(239, 68, 68, 0.4),
+      0 0 60px rgba(239, 68, 68, 0.2);
+  }
+  
+  /* 动画效果 */
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+}
+
+/* 自定义动画 */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(245, 158, 11, 0.5);
+  }
+}
+
+/* 页面过渡效果 */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+/* ===== 移动端适配 ===== */
+
+/* 手机端基础适配 (宽度 <= 640px) */
+@media (max-width: 640px) {
+  /* 减小内边距 */
+  .card {
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+  
+  /* 调整标题大小 */
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  h2 {
+    font-size: 1.25rem;
+  }
+  
+  /* 确保按钮足够大便于点击 */
+  .btn {
+    min-height: 48px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* 优化输入框在移动端的体验 */
+  .input-field {
+    font-size: 16px !important; /* 防止iOS自动缩放 */
+    padding: 0.875rem 1rem;
+  }
+  
+  /* 移动端滚动条更小 */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+}
+
+/* 超小屏幕适配 (宽度 <= 375px，如iPhone SE) */
+@media (max-width: 375px) {
+  .card {
+    padding: 0.75rem;
+  }
+  
+  .btn {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+
+/* 小屏幕横屏优化 */
+@media (max-height: 500px) and (orientation: landscape) {
+  .min-h-screen {
+    min-height: auto;
+  }
+  
+  /* 横屏时减小垂直间距 */
+  .py-6 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  
+  .mb-8 {
+    margin-bottom: 1rem;
+  }
+  
+  .my-8 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* 安全区域适配（刘海屏、底部横条等） */
+@supports (padding: env(safe-area-inset-bottom)) {
+  /* 底部安全区域 */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* 顶部安全区域 */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  /* 左右安全区域（适配刘海横屏） */
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* 全部安全区域 */
+  .safe-area-all {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* 禁用双击缩放和改善触摸体验 */
+* {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 移动端专用工具类 */
+@media (max-width: 640px) {
+  /* 移动端隐藏 */
+  .mobile-hide {
+    display: none !important;
+  }
+  
+  /* 移动端全宽 */
+  .mobile-full-width {
+    width: 100% !important;
+  }
+  
+  /* 移动端文字居中 */
+  .mobile-text-center {
+    text-align: center !important;
+  }
+  
+  /* 移动端减小字体 */
+  .mobile-text-sm {
+    font-size: 0.875rem !important;
+  }
+  
+  /* 移动端减小间距 */
+  .mobile-gap-2 {
+    gap: 0.5rem !important;
+  }
+  
+  /* 移动端垂直布局 */
+  .mobile-flex-col {
+    flex-direction: column !important;
+  }
+}
+
+/* 桌面端专用工具类 */
+@media (min-width: 641px) {
+  /* 桌面端隐藏 */
+  .desktop-hide {
+    display: none !important;
+  }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+  /* 增大可点击区域 */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* 禁用hover效果（避免触摸后粘滞） */
+  .btn:hover {
+    transform: none;
+  }
+  
+  /* 提供active反馈 */
+  .btn:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
+}
+
+/* 防止iOS橡皮筋效果在不需要的地方出现 */
+.no-bounce {
+  overscroll-behavior: none;
+}
+
+/* 优化移动端文本选择 */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* 移动端动画优化（减少动画以节省电量） */
+@media (max-width: 640px) and (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== 背景皮肤样式 ===== */
+
+/* 皮肤光效颜色变量 */
+:root {
+  /* 默认皮肤 - 琥珀/橙色 */
+  --glow-color-primary: rgba(245, 158, 11, 0.3);
+  --glow-color-secondary: rgba(245, 158, 11, 0.1);
+  --glow-color-accent: rgba(245, 158, 11, 0.4);
+  --glow-gradient-from: #f59e0b;
+  --glow-gradient-via: #f97316;
+  --glow-gradient-to: #ef4444;
+}
+
+/* 默认皮肤 - 经典深色 */
+.skin-default {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  position: relative;
+  --glow-color-primary: rgba(245, 158, 11, 0.3);
+  --glow-color-secondary: rgba(245, 158, 11, 0.1);
+  --glow-color-accent: rgba(245, 158, 11, 0.4);
+  --glow-gradient-from: #f59e0b;
+  --glow-gradient-via: #f97316;
+  --glow-gradient-to: #ef4444;
+}
+
+.skin-default::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(168, 85, 247, 0.03) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 星空皮肤 - 增强版 */
+.skin-starry {
+  background: linear-gradient(180deg, #020617 0%, #0c0a1d 30%, #1a1033 60%, #0c0a1d 100%);
+  position: relative;
+  overflow: hidden;
+  /* 紫色/蓝色星空光效 */
+  --glow-color-primary: rgba(147, 51, 234, 0.4);
+  --glow-color-secondary: rgba(139, 92, 246, 0.2);
+  --glow-color-accent: rgba(167, 139, 250, 0.5);
+  --glow-gradient-from: #a855f7;
+  --glow-gradient-via: #8b5cf6;
+  --glow-gradient-to: #6366f1;
+}
+
+.skin-starry::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    /* 大星星 */
+    radial-gradient(2px 2px at 10% 10%, rgba(255, 255, 255, 1), transparent),
+    radial-gradient(2px 2px at 30% 5%, rgba(200, 220, 255, 1), transparent),
+    radial-gradient(3px 3px at 50% 15%, rgba(255, 200, 150, 0.9), transparent),
+    radial-gradient(2px 2px at 70% 8%, rgba(255, 255, 255, 1), transparent),
+    radial-gradient(2px 2px at 90% 12%, rgba(180, 200, 255, 1), transparent),
+    /* 中等星星 */
+    radial-gradient(1.5px 1.5px at 15% 25%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1.5px 1.5px at 25% 35%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1.5px 1.5px at 45% 28%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1.5px 1.5px at 65% 32%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1.5px 1.5px at 85% 22%, rgba(255, 255, 255, 0.9), transparent),
+    /* 小星星层1 */
+    radial-gradient(1px 1px at 5% 45%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 20% 55%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 35% 48%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 55% 52%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 75% 45%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 95% 58%, rgba(255, 255, 255, 0.6), transparent),
+    /* 小星星层2 */
+    radial-gradient(1px 1px at 8% 65%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 28% 72%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 48% 68%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 68% 75%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 88% 62%, rgba(255, 255, 255, 0.5), transparent),
+    /* 小星星层3 */
+    radial-gradient(1px 1px at 12% 82%, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 32% 88%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 52% 85%, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 72% 92%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 92% 78%, rgba(255, 255, 255, 0.4), transparent);
+  pointer-events: none;
+  z-index: 0;
+  animation: starry-twinkle 4s ease-in-out infinite;
+}
+
+.skin-starry::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    /* 银河效果 */
+    linear-gradient(135deg,
+      transparent 0%,
+      rgba(138, 43, 226, 0.03) 20%,
+      rgba(75, 0, 130, 0.05) 35%,
+      rgba(138, 43, 226, 0.03) 50%,
+      transparent 100%
+    ),
+    /* 星云效果 */
+    radial-gradient(ellipse at 30% 20%, rgba(147, 51, 234, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 70% 80%, rgba(59, 130, 246, 0.06) 0%, transparent 35%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes starry-twinkle {
+  0%, 100% { opacity: 0.9; }
+  25% { opacity: 1; }
+  50% { opacity: 0.85; }
+  75% { opacity: 1; }
+}
+
+/* 霓虹皮肤 - 赛博朋克增强版 */
+.skin-neon {
+  background: linear-gradient(180deg, #0a0015 0%, #150025 40%, #0f0a20 70%, #0a0015 100%);
+  position: relative;
+  overflow: hidden;
+  /* 粉/青霓虹光效 */
+  --glow-color-primary: rgba(236, 72, 153, 0.4);
+  --glow-color-secondary: rgba(6, 182, 212, 0.3);
+  --glow-color-accent: rgba(168, 85, 247, 0.5);
+  --glow-gradient-from: #ec4899;
+  --glow-gradient-via: #a855f7;
+  --glow-gradient-to: #06b6d4;
+}
+
+.skin-neon::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    /* 网格效果 */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 50px,
+      rgba(168, 85, 247, 0.03) 50px,
+      rgba(168, 85, 247, 0.03) 51px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 50px,
+      rgba(236, 72, 153, 0.02) 50px,
+      rgba(236, 72, 153, 0.02) 51px
+    ),
+    /* 渐变光晕 */
+    radial-gradient(ellipse at 20% 50%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(236, 72, 153, 0.12) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 90%, rgba(6, 182, 212, 0.1) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.skin-neon::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 300%;
+  height: 100%;
+  background:
+    /* 扫描线效果 */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(255, 255, 255, 0.01) 2px,
+      rgba(255, 255, 255, 0.01) 4px
+    ),
+    /* 流动光线 */
+    linear-gradient(90deg,
+      transparent 0%,
+      transparent 30%,
+      rgba(168, 85, 247, 0.3) 45%,
+      rgba(236, 72, 153, 0.3) 50%,
+      rgba(6, 182, 212, 0.3) 55%,
+      transparent 70%,
+      transparent 100%
+    );
+  pointer-events: none;
+  z-index: 0;
+  animation: neon-scan 8s linear infinite;
+}
+
+@keyframes neon-scan {
+  0% { transform: translateX(-33%); }
+  100% { transform: translateX(33%); }
+}
+
+/* 森林皮肤 - 自然增强版 */
+.skin-forest {
+  background: linear-gradient(180deg, #061208 0%, #0a1f10 30%, #0d2818 60%, #081510 100%);
+  position: relative;
+  overflow: hidden;
+  /* 翠绿/金色森林光效 */
+  --glow-color-primary: rgba(34, 197, 94, 0.4);
+  --glow-color-secondary: rgba(163, 230, 53, 0.2);
+  --glow-color-accent: rgba(74, 222, 128, 0.5);
+  --glow-gradient-from: #22c55e;
+  --glow-gradient-via: #84cc16;
+  --glow-gradient-to: #facc15;
+}
+
+.skin-forest::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    /* 阳光透射效果 */
+    radial-gradient(ellipse at 70% 0%, rgba(250, 204, 21, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 30% 10%, rgba(163, 230, 53, 0.05) 0%, transparent 30%),
+    /* 森林深处光影 */
+    radial-gradient(ellipse at 20% 70%, rgba(34, 197, 94, 0.1) 0%, transparent 45%),
+    radial-gradient(ellipse at 80% 80%, rgba(22, 163, 74, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 100%, rgba(21, 128, 61, 0.12) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.skin-forest::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    /* 飘落的光斑效果 */
+    radial-gradient(2px 2px at 15% 20%, rgba(250, 204, 21, 0.4), transparent),
+    radial-gradient(3px 3px at 35% 35%, rgba(250, 204, 21, 0.3), transparent),
+    radial-gradient(2px 2px at 55% 15%, rgba(250, 204, 21, 0.35), transparent),
+    radial-gradient(2px 2px at 75% 40%, rgba(250, 204, 21, 0.3), transparent),
+    radial-gradient(3px 3px at 25% 55%, rgba(250, 204, 21, 0.25), transparent),
+    radial-gradient(2px 2px at 85% 25%, rgba(250, 204, 21, 0.4), transparent);
+  pointer-events: none;
+  z-index: 0;
+  animation: forest-light 6s ease-in-out infinite;
+}
+
+@keyframes forest-light {
+  0%, 100% { opacity: 0.6; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(5px); }
+}
+
+/* 烈焰皮肤 - 火焰增强版 */
+.skin-flame {
+  background: linear-gradient(180deg, #0a0101 0%, #1a0505 30%, #2d0a0a 60%, #1a0505 100%);
+  position: relative;
+  overflow: hidden;
+  /* 红/橙火焰光效 */
+  --glow-color-primary: rgba(239, 68, 68, 0.5);
+  --glow-color-secondary: rgba(251, 146, 60, 0.3);
+  --glow-color-accent: rgba(251, 191, 36, 0.5);
+  --glow-gradient-from: #ef4444;
+  --glow-gradient-via: #f97316;
+  --glow-gradient-to: #fbbf24;
+}
+
+.skin-flame::before {
+  content: '';
+  position: fixed;
+  bottom: -20%;
+  left: -10%;
+  right: -10%;
+  height: 80%;
+  background:
+    /* 火焰核心 */
+    radial-gradient(ellipse at 50% 100%, rgba(251, 146, 60, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse at 30% 100%, rgba(249, 115, 22, 0.2) 0%, transparent 45%),
+    radial-gradient(ellipse at 70% 100%, rgba(239, 68, 68, 0.2) 0%, transparent 45%),
+    /* 火焰边缘 */
+    radial-gradient(ellipse at 20% 90%, rgba(220, 38, 38, 0.15) 0%, transparent 35%),
+    radial-gradient(ellipse at 80% 90%, rgba(234, 88, 12, 0.15) 0%, transparent 35%),
+    /* 火星 */
+    radial-gradient(1px 1px at 25% 70%, rgba(251, 191, 36, 0.8), transparent),
+    radial-gradient(2px 2px at 45% 65%, rgba(251, 146, 60, 0.9), transparent),
+    radial-gradient(1px 1px at 65% 75%, rgba(251, 191, 36, 0.7), transparent),
+    radial-gradient(2px 2px at 35% 80%, rgba(252, 211, 77, 0.8), transparent),
+    radial-gradient(1px 1px at 75% 68%, rgba(251, 146, 60, 0.9), transparent);
+  pointer-events: none;
+  z-index: 0;
+  animation: flame-dance 2s ease-in-out infinite;
+}
+
+.skin-flame::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    /* 热浪效果 */
+    radial-gradient(ellipse at 40% 30%, rgba(239, 68, 68, 0.05) 0%, transparent 40%),
+    radial-gradient(ellipse at 60% 50%, rgba(249, 115, 22, 0.04) 0%, transparent 35%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes flame-dance {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scaleY(1) translateY(0);
+  }
+  25% {
+    opacity: 0.9;
+    transform: scaleY(1.03) translateY(-2px);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1.05) translateY(-4px);
+  }
+  75% {
+    opacity: 0.9;
+    transform: scaleY(1.02) translateY(-1px);
+  }
+}
+
+/* 海洋皮肤 - 深海增强版 */
+.skin-ocean {
+  background: linear-gradient(180deg, #010a12 0%, #03162a 30%, #0a3050 60%, #052035 100%);
+  position: relative;
+  overflow: hidden;
+  /* 蓝/青海洋光效 */
+  --glow-color-primary: rgba(56, 189, 248, 0.4);
+  --glow-color-secondary: rgba(14, 165, 233, 0.2);
+  --glow-color-accent: rgba(34, 211, 238, 0.5);
+  --glow-gradient-from: #38bdf8;
+  --glow-gradient-via: #0ea5e9;
+  --glow-gradient-to: #22d3ee;
+}
+
+.skin-ocean::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    /* 水面光效 */
+    radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.1) 0%, transparent 40%),
+    /* 深海光影 */
+    radial-gradient(ellipse at 30% 50%, rgba(14, 165, 233, 0.08) 0%, transparent 45%),
+    radial-gradient(ellipse at 70% 60%, rgba(6, 182, 212, 0.06) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 80%, rgba(34, 211, 238, 0.05) 0%, transparent 35%);
+  pointer-events: none;
+  z-index: 0;
+  animation: ocean-shimmer 8s ease-in-out infinite;
+}
+
+.skin-ocean::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    /* 气泡效果 */
+    radial-gradient(3px 3px at 20% 80%, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(4px 4px at 35% 70%, rgba(255, 255, 255, 0.2), transparent),
+    radial-gradient(2px 2px at 50% 85%, rgba(255, 255, 255, 0.25), transparent),
+    radial-gradient(3px 3px at 65% 75%, rgba(255, 255, 255, 0.2), transparent),
+    radial-gradient(2px 2px at 80% 82%, rgba(255, 255, 255, 0.3), transparent),
+    /* 波纹效果 */
+    repeating-radial-gradient(
+      ellipse at 50% 0%,
+      transparent 0px,
+      transparent 40px,
+      rgba(56, 189, 248, 0.02) 40px,
+      rgba(56, 189, 248, 0.02) 42px,
+      transparent 42px,
+      transparent 80px
+    );
+  pointer-events: none;
+  z-index: 0;
+  animation: ocean-bubbles 10s ease-in-out infinite;
+}
+
+@keyframes ocean-shimmer {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+@keyframes ocean-bubbles {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(-15px); opacity: 0.9; }
+}
+
+/* 确保内容在皮肤背景上层 */
+.skin-default > *,
+.skin-starry > *,
+.skin-neon > *,
+.skin-forest > *,
+.skin-flame > *,
+.skin-ocean > * {
+  position: relative;
+  z-index: 1;
+}
