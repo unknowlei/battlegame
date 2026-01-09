@@ -80,7 +80,9 @@ export async function initAudio(): Promise<void> {
 export function initBGM(): void {
   if (bgmAudio) return
   
-  bgmAudio = new Audio('/bgm.mp3')
+  // 使用 import.meta.env.BASE_URL 来支持子目录部署
+  const baseUrl = import.meta.env.BASE_URL || '/'
+  bgmAudio = new Audio(`${baseUrl}bgm.mp3`)
   bgmAudio.loop = true
   bgmAudio.volume = 0
   
