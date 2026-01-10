@@ -407,7 +407,7 @@ const isFormValid = computed(() => {
               <span class="font-medium">使用内置默认配置</span>
             </div>
             <p class="text-sm text-slate-400">
-              已配置智谱 GLM-4-Flash 模型，无需额外设置即可开始游戏。
+              无需额外设置即可开始游戏。
             </p>
           </div>
 
