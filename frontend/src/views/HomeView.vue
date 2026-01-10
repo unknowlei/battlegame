@@ -337,7 +337,7 @@ const isFormValid = computed(() => {
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3 text-green-400">
             <span class="text-2xl">✅</span>
-            <p>{{ usingDefault ? '准备就绪，可以开始游戏！' : 'AI已配置，可以开始游戏！' }}</p>
+            <p>配置成功，可以开始游戏！</p>
           </div>
           <button
             v-if="!usingDefault"
@@ -592,8 +592,16 @@ const isFormValid = computed(() => {
       </div>
 
       <!-- 底部信息 -->
-      <div class="mt-8 sm:mt-12 text-slate-500 text-xs sm:text-sm">
-        <p>由 AI 驱动的创意对战游戏</p>
+      <div class="mt-8 sm:mt-12 text-slate-500 text-xs sm:text-sm text-center">
+        <a
+          href="https://github.com/unknowlei/battlegame"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-slate-300 transition-colors inline-flex items-center gap-1 flex-wrap justify-center"
+        >
+          <span>GitHub仓库地址，欢迎打星⭐：</span>
+          <span class="underline break-all">https://github.com/unknowlei/battlegame</span>
+        </a>
       </div>
     </div>
     
