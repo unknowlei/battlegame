@@ -7,8 +7,10 @@ import ItemCard from '@/components/ItemCard.vue'
 import ScoreBoard from '@/components/ScoreBoard.vue'
 import ChainHistory from '@/components/ChainHistory.vue'
 import SettingsModal from '@/components/SettingsModal.vue'
+import BestScoresModal from '@/components/BestScoresModal.vue'
 import { playSFX, resetAndPlayBGM } from '@/services/audio'
 import { recordBattle, getUniqueCount } from '@/services/stats'
+import { saveScore, isNewHighScore, getHighestScore } from '@/services/scores'
 
 const router = useRouter()
 const gameStore = useGameStore()
@@ -20,9 +22,12 @@ const resultMessage = ref('')
 const resultType = ref<'win' | 'lose' | 'duplicate'>('win')
 const errorMessage = ref('')
 const showSettings = ref(false)
+const showBestScores = ref(false)
 const statsCount = ref(0)
 const lastDefender = ref('')
 const lastChallenger = ref('')
+const isHighScore = ref(false)
+const previousHighScore = ref(0)
 
 // 提取理由中的实际内容（去掉"挑战者是：XXX，成功/失败的理由是："前缀）
 function extractReason(reason: string): string {
@@ -42,6 +47,8 @@ onMounted(() => {
   }
   // 重置并播放BGM（从头开始，3秒渐入）
   resetAndPlayBGM()
+  // 记录当前最高分
+  previousHighScore.value = getHighestScore()
 })
 
 // 监听游戏状态变化进行自动保存（只有进行过PK才保存，即得分>0）
@@ -53,6 +60,72 @@ watch(
     }
   }
 )
+
+// 监听游戏结束，保存分数
+watch(
+  () => gameStore.status,
+  (newStatus) => {
+    if (newStatus === 'ended' && gameStore.score > 0) {
+      // 获取挑战链物品名称
+      const chainItems = gameStore.chain.map(item => item.item)
+      chainItems.push(gameStore.currentItem) // 添加最后一个物品
+      
+      // 检查是否是新纪录
+      isHighScore.value = isNewHighScore(gameStore.score)
+      
+      // 保存分数到本地
+      saveScore(gameStore.score, chainItems)
+      
+      // 记录到数据库（为排行榜做准备）
+      recordHighScoreToDatabase(gameStore.score, chainItems)
+    }
+  }
+)
+
+// 记录最高分到数据库
+async function recordHighScoreToDatabase(score: number, chain: string[]) {
+  // 使用现有的 stats 服务记录
+  // 这里我们记录到 game1_scores 表
+  try {
+    const c = getStatsConfig()
+    await fetch(`${c.s}/1.1/classes/game1_scores`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-LC-Id': c.a,
+        'X-LC-Key': c.k
+      },
+      body: JSON.stringify({
+        score,
+        chain: chain.slice(0, 20), // 只保存前20个
+        deviceId: getDeviceId(),
+        timestamp: Date.now()
+      })
+    })
+  } catch {
+    // 静默失败
+  }
+}
+
+// 获取设备ID
+function getDeviceId(): string {
+  const k = 'pb_did'
+  let d = localStorage.getItem(k)
+  if (!d) {
+    d = crypto.randomUUID()
+    localStorage.setItem(k, d)
+  }
+  return d
+}
+
+// 获取 stats 配置
+function getStatsConfig() {
+  const _a = [117,100,66,104,115,120,70,80,80,67,79,97,98,120,67,115,76,54,107,116,109,87,121,66,45,103,122,71,122,111,72,115,122]
+  const _k = [119,48,55,82,73,57,111,72,87,101,106,67,114,77,76,106,86,109,120,110,48,76,107,116]
+  const _s = [104,116,116,112,115,58,47,47,117,100,98,104,115,120,102,112,46,108,99,45,99,110,45,110,49,45,115,104,97,114,101,100,46,99,111,109]
+  const _x = (a: number[]) => a.map(c => String.fromCharCode(c)).join('')
+  return { a: _x(_a), k: _x(_k), s: _x(_s) }
+}
 
 async function handleChallenge() {
   if (!inputItem.value.trim() || isLoading.value) return
@@ -112,6 +185,8 @@ function handleRestart() {
   inputItem.value = ''
   showResult.value = false
   errorMessage.value = ''
+  isHighScore.value = false
+  previousHighScore.value = getHighestScore()
 }
 
 function handleBackHome() {
@@ -326,7 +401,18 @@ function handleExport() {
         <!-- 游戏结束 -->
         <template v-else-if="gameStore.status === 'ended'">
           <div class="text-center">
-            <div class="text-6xl sm:text-8xl mb-5 sm:mb-8 animate-bounce">🎮</div>
+            <!-- 新纪录提示 -->
+            <div v-if="isHighScore" class="mb-4">
+              <div class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500/30 to-orange-500/30 px-4 py-2 rounded-full border border-amber-500/50 animate-pulse">
+                <span class="text-2xl">🎉</span>
+                <span class="text-amber-400 font-bold">新纪录！</span>
+                <span class="text-2xl">🎉</span>
+              </div>
+            </div>
+            
+            <div class="text-6xl sm:text-8xl mb-5 sm:mb-8 animate-bounce">
+              {{ isHighScore ? '🏆' : '🎮' }}
+            </div>
             <h2 class="text-2xl sm:text-4xl font-bold text-white mb-4 sm:mb-6">游戏结束</h2>
             
             <div class="card mb-5 sm:mb-8 bg-gradient-to-br from-game-card to-slate-800 border border-slate-600/50">
@@ -334,6 +420,10 @@ function handleExport() {
               <p class="text-4xl sm:text-6xl font-black text-gradient">{{ gameStore.score }}</p>
               <p class="text-slate-400 mt-4 sm:mt-6 text-base sm:text-lg">
                 你成功挑战了 <span class="text-game-accent font-bold">{{ gameStore.score }}</span> 个物品！
+              </p>
+              <!-- 历史最高分提示 -->
+              <p v-if="isHighScore && previousHighScore > 0" class="text-amber-400 text-sm mt-2">
+                超越了之前的记录 {{ previousHighScore }} 分！
               </p>
             </div>
 
@@ -348,6 +438,9 @@ function handleExport() {
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center">
               <button @click="handleRestart" class="btn btn-accent py-3 sm:py-4 px-6 sm:px-8 text-base sm:text-lg transform transition-all hover:scale-105">
                 🔄 再来一局
+              </button>
+              <button @click="showBestScores = true" class="btn btn-primary py-3 sm:py-4 px-6 sm:px-8 text-base sm:text-lg transform transition-all hover:scale-105">
+                🏆 最佳战绩
               </button>
               <button @click="handleBackHome" class="btn btn-outline py-3 sm:py-4 px-6 sm:px-8 text-base sm:text-lg transform transition-all hover:scale-105">
                 🏠 返回首页
@@ -369,6 +462,12 @@ function handleExport() {
     <SettingsModal
       :visible="showSettings"
       @close="showSettings = false"
+    />
+    
+    <!-- 最佳战绩弹窗 -->
+    <BestScoresModal
+      :visible="showBestScores"
+      @close="showBestScores = false"
     />
   </div>
 </template>

@@ -2,7 +2,7 @@ import type { SettingsConfig, SkinType, SkinInfo } from '@/types'
 
 const DEFAULT_SETTINGS: SettingsConfig = {
   musicEnabled: true,
-  musicVolume: 40,
+  musicVolume: 30,
   sfxEnabled: true,
   sfxVolume: 70,
   autoClearCache: false,  // 默认关闭每场对战后清除记忆
