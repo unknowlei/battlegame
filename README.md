@@ -36,15 +36,6 @@ pnpm dev
 
 游戏默认使用模拟模式，可以直接体验。如需使用真实AI判断，请配置AI API：
 
-### 推荐：SiliconFlow（免费）
-
-1. 访问 https://cloud.siliconflow.cn/ 注册账号
-2. 获取API Key
-3. 在游戏设置中配置：
-   - API Key: 你的密钥
-   - Base URL: https://api.siliconflow.cn/v1
-   - Model: Qwen/Qwen2.5-7B-Instruct
-
 ## 📁 项目结构
 
 ```
@@ -69,5 +60,6 @@ pnpm dev
 - **路由**: Vue Router
 
 ## 📄 许可证
+
 
 MIT License
